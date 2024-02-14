@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #chat-container {
+            height: 400px;
+            width: 400px;
+            overflow-y: scroll;
+            overflow-y: hidden;
+            overflow-x: scroll;
+            overflow-x:hidden;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+
+        #user-input {
+            margin-top: 10px;
+            padding: 5px;
+            width: 70%;
+            width:400px;
+        }
+
+        #submit-btn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+        }
+
+        #submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .user-message, .chatbot-message {
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .user-message {
+            background-color: #e6f7ff;
+        }
+
+        .chatbot-message {
+            background-color: #d9f7be;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center">Medical Chatbot</h1>
+    <div id="chat-container">
+        <div id="chat">
+            <div class="chatbot-message">
+                <p>Chatbot: Welcome to the medical chatbot. How can I assist you today?</p>
+            </div>
+        </div>
+    </div>
+    <form id="user-input-form">
+        <input type="text" id="user-input" name="user_input" required placeholder="Type your message...">
+        <button type="submit" id="submit-btn">Send</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('user-input-form');
+            var chatContainer = document.getElementById('chat-container');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var userInput = document.getElementById('user-input').value.trim();
+
+                if (userInput === '') {
+                    return;
+                }
+
+                var userMessage = document.createElement('div');
+                userMessage.className = 'user-message';
+                userMessage.innerHTML = '<p>You: ' + userInput + '</p>';
+                chatContainer.appendChild(userMessage);
+
+                scrollToBottom();
+
+                document.getElementById('user-input').value = '';
+
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'user_input=' + encodeURIComponent(userInput),
+                })
+                .then(response => response.text())
+                .then(data => {
+                    var chatbotMessage = document.createElement('div');
+                    chatbotMessage.className = 'chatbot-message';
+                    chatbotMessage.innerHTML = '<p>Chatbot: ' + 'diabetes' + '</p>';
+                    chatContainer.appendChild(chatbotMessage);
+
+                    scrollToBottom();
+                });
+            });
+
+            function scrollToBottom() {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
